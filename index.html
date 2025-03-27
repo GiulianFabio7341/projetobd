@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>Interface</title>
+</head>
+<body>
+    <header>
+<h3>Sistema da academia</h3>
+    </header>
+
+    <main>
+
+        <form action="">
+           
+            <section class="nome" onclick="seleciona()">
+                <label for="">Dados Pessoais</label> 
+                <label for="nome">Primeiro nome:</label>
+            <input type="" placeholder="breno" id="nome">
+            </section>
+         
+                <section class="sobrenome" onclick="seleciona()">
+                
+                    <label for="sobrenome">Sobrenome:</label>
+                <input type="text" placeholder="breno" id="sobrenome">
+                </section>
+
+                <section class="date" onclick="seleciona()">
+                    <label for="date">Data nascimento:</label>
+                <input type="date" id="date">
+                </section>
+
+                <section class="cpf" onclick="seleciona()">
+                    <label for="cpf">CPF:</label>
+                <input type="number" placeholder="99999999999" id="cpf"  pattern="\d*" maxlength="10">
+                </section>
+
+
+
+            
+            
+            <div class="btn">
+                <button type="button"  onclick ="senha()" >Criar/Salvar</button>
+                <button type="button"  onclick ="senha()" >Edite</button>
+                <button type="button"  onclick ="senha()" >Exclua</button>
+            </div>
+
+            
+    
+        </form>
+
+        <form action="">
+            <section class="nome" onclick="seleciona()">
+            <label for="">Usuário</label>
+                <label for="nome">Digite seu login:</label>
+            <input type="text" placeholder="breno" id="nome">
+            </section>
+
+        <section class="senha" onclick="seleciona()">
+                <label for="password">Digite sua senha:</label>
+                <input type="password" value="" placeholder="senha@123!" id="password">
+                </section>
+    
+            
+                <div class="btn">
+                    <button type="button"  onclick ="senha()" >Criar/Salvar</button>
+                    <button type="button"  onclick ="senha()" >Edite</button>
+                    <button type="button"  onclick ="senha()" >Exclua</button>
+                </div>
+    
+        </form>
+
+        <form action="">
+            <section class="nome" onclick="seleciona()">
+            <label for="">Salário</label>
+                <label for="nome">Digite o login:</label>
+            <input type="text" placeholder="breno" id="nome">
+            </section>
+
+        <section class="senha" onclick="seleciona()">
+                <label for="number">Digite a transação:</label>
+                <input type="number" value="" placeholder="5000" id="number">
+                </section>
+    
+            
+                <div class="btn">
+                    <button type="button"  onclick ="senha()" >Criar/Salvar</button>
+                    <button type="button"  onclick ="senha()" >Edite</button>
+                    <button type="button"  onclick ="senha()" >Exclua</button>
+                <div>
+    
+        </form>
+    </main>
+    
+    <footer>
+        <span>
+          &copy;Sistema da academia-2025, todos os direitos reservados
+        </span>
+    </footer>
+</body>
+<script src="./script.js"></script>
+</html>
