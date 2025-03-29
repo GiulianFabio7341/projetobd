@@ -1,3 +1,7 @@
+/*Lembrar de usar no Git Bash: PS1='\u@\h:\w$ '
+
+*/
+
 require("dotenv").config();
 
 const db = require("./db.js");

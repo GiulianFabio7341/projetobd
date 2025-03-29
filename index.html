@@ -7,7 +7,6 @@
     <title>Interface</title>
 </head>
 <body>
-    <!--teste -->
     <header>
 <h3>Sistema da academia</h3>
     </header>
@@ -27,7 +26,7 @@
                 <label for="">Dados Pessoais</label> 
                 <label for="nome">Primeiro nome:</label>
                 <!--Cada input serve para inserir ou excluir do bd-->
-            <input type="" placeholder="breno" id="nome">
+            <input type="" placeholder="breno" id="primeiro_nome">
             </section>
          
                 <section class="sobrenome" onclick="seleciona()">
@@ -56,9 +55,9 @@
             
             <!--BTNS que servem para puxar o método que vai conectar o input com o bd-->
             <div class="btn">
-                <button type="button"  onclick ="senha()" >Criar/Salvar</button>
-                <button type="button"  onclick ="senha()" >Edite</button>
-                <button type="button"  onclick ="senha()" >Exclua</button>
+                <button type="button"  onclick ="criarDadosPessoais()" >Criar/Salvar</button>
+                <button type="button"  onclick ="atualizarDadosPessoais()" >Edite</button>
+                <button type="button"  onclick ="deletarDadosPessoais()" >Exclua</button>
             </div>
 
             
