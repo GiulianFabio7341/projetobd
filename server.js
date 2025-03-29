@@ -64,6 +64,63 @@ app.post("/api/dados-pessoais", async (req, res) => {
     }
 });
 
+// Rota para salvar contato
+app.post("/api/contato", async (req, res) => {
+    console.log("Recebendo requisição:", req.body);
+    const { login, email, telefone, redes_sociais } = req.body;
+
+    if (!login || !email || !telefone || !redes_sociais) {
+        console.error("Erro: Campos obrigatórios faltando!", req.body);
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+    }
+
+    try {
+        const client = await connect();
+        const query = `
+            INSERT INTO schema1.contato (login, email, telefone, redes_sociais)
+            VALUES ($1, $2, $3, $4) RETURNING *`;
+        const values = [login, email, telefone, redes_sociais];
+
+        console.log("Executando query com valores:", values);
+        const result = await client.query(query, values);
+
+        console.log("Resultado da query:", result.rows[0]);
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("Erro ao salvar contato:", err);
+        res.status(500).json({ error: "Erro ao salvar contato: " + err.message });
+    }
+});
+
+// Rota para salvar salário
+app.post("/api/salario", async (req, res) => {
+    console.log("Recebendo requisição:", req.body);
+    const { login, transacao } = req.body;
+
+    if (!login || !transacao ) {
+        console.error("Erro: Campos obrigatórios faltando!", req.body);
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+    }
+
+    try {
+        const client = await connect();
+        const query = `
+            INSERT INTO schema1.salario (login, transacao)
+            VALUES ($1, $2) RETURNING *`;
+        const values = [login, transacao];
+
+        console.log("Executando query com valores:", values);
+        const result = await client.query(query, values);
+
+        console.log("Resultado da query:", result.rows[0]);
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("Erro ao salvar transacao:", err);
+        res.status(500).json({ error: "Erro ao salvar contato: " + err.message });
+    }
+});
+
+
 // Rota para servir o HTML
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
