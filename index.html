@@ -10,14 +10,22 @@
     <header>
 <h3>Sistema da academia</h3>
     </header>
-
+    <!--Aqui vai ser um select pra puxar informações do bd 
+    para que o adm possa editar os dados pessoas daquele login, contato e salário-->
+    <h3>Escolha uma opção de usuário:</h3>
+    <select name="escolha" id="escolha" >
+        <option value="valor1">Usuário 1</option>
+        <option value="valor2">Usuário 2</option>
+        <option value="valor3">Usuário 3</option>
+    </select>
     <main>
 
         <form action="">
-           
+           <!--Cada section do form contém um input que vai ser conectado ao bd-->
             <section class="nome" onclick="seleciona()">
                 <label for="">Dados Pessoais</label> 
                 <label for="nome">Primeiro nome:</label>
+                <!--Cada input serve para inserir ou excluir do bd-->
             <input type="" placeholder="breno" id="nome">
             </section>
          
@@ -37,10 +45,15 @@
                 <input type="number" placeholder="99999999999" id="cpf"  pattern="\d*" maxlength="10">
                 </section>
 
-
+                <section class="user" onclick="seleciona()">
+                
+                    <label for="user">Usuário:</label>
+                <input type="text" placeholder="breno" id="sobrenome">
+                </section>
 
             
             
+            <!--BTNS que servem para puxar o método que vai conectar o input com o bd-->
             <div class="btn">
                 <button type="button"  onclick ="senha()" >Criar/Salvar</button>
                 <button type="button"  onclick ="senha()" >Edite</button>
@@ -53,17 +66,27 @@
 
         <form action="">
             <section class="nome" onclick="seleciona()">
-            <label for="">Usuário</label>
+            <label for="">Contato</label>
                 <label for="nome">Digite seu login:</label>
             <input type="text" placeholder="breno" id="nome">
             </section>
 
-        <section class="senha" onclick="seleciona()">
-                <label for="password">Digite sua senha:</label>
-                <input type="password" value="" placeholder="senha@123!" id="password">
+        <section class="email" onclick="seleciona()">
+                <label for="email">Digite sue email:</label>
+                <input type="email" value="" placeholder="giu@emai.com" id="email">
+                </section>
+
+                <section class="telefone" onclick="seleciona()">
+                    <label for="telefone">telefone:</label>
+                <input type="number" placeholder="99999999999" id="telefone"  pattern="\d*" maxlength="10">
                 </section>
     
+                <section class="redessociais" onclick="seleciona()">
+                        <label for="redessocias">Digite suas redes sociais:</label>
+                    <input type="text" placeholder="insta_academia" id="redessociais">
+                    </section>
             
+
                 <div class="btn">
                     <button type="button"  onclick ="senha()" >Criar/Salvar</button>
                     <button type="button"  onclick ="senha()" >Edite</button>
