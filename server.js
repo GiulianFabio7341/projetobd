@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const { Pool } = require("pg");
 const path = require("path");
-const cors = require("cors"); // Certifique-se de que isso está incluído
+const cors = require("cors");
+const admin = require("firebase-admin");
 
 const app = express();
 app.use(express.json());
@@ -10,13 +11,13 @@ app.use(express.json());
 // Configuração explícita do CORS
 app.use(cors({
     origin: "http://127.0.0.1:5500", // Permite especificamente essa origem
-    methods: ["GET", "POST", "PUT"],        // Métodos permitidos
+    methods: ["GET", "POST", "PUT", "DELETE"],    // Métodos permitidos
     allowedHeaders: ["Content-Type"] // Cabeçalhos permitidos
 }));
 
 app.use(express.static("."));
 
-// Função para criar o pool de conexão
+// Função conexão com o banco PostgreSQL
 async function connect() {
     if (global.connection) return global.connection.connect();
 
@@ -38,27 +39,42 @@ async function connect() {
         throw err;
     }
 }
+// Conexão com o banco Firebase
+const serviceAccount = require("./serviceAccountKey.json");
 
-// Rota para salvar dados pessoais
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+
 app.post("/api/dados-pessoais", async (req, res) => {
-    console.log("Recebendo requisição:", req.body);
     const { nome, sobrenome, data_nascimento, cpf, usuario } = req.body;
-
-    
 
     try {
         const client = await connect();
-        const query = `
-            INSERT INTO schema1.dados_pessoais (nome, sobrenome, data_nascimento, cpf, usuario)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *`;
-        const values = [nome, sobrenome, data_nascimento, cpf, usuario];
-        console.log("Executando query com valores:", values);
-        const result = await client.query(query, values);
-        console.log("Resultado da query:", result.rows[0]);
-        res.status(201).json(result.rows[0]);
+        await client.query("BEGIN");
+
+        // Inserção no PostgreSQL
+        const postgresResult = await client.query(`
+            INSERT INTO schema1.dados_pessoais (nome, sobrenome, data_nascimento, cpf, usuario) 
+            VALUES ($1, $2, $3, $4, $5) RETURNING *
+        `, [nome, sobrenome, data_nascimento, cpf, usuario]);
+
+        // Inserção no Firestore
+        const firebaseResult = await db.collection("usuarios").doc(usuario).collection("dados_pessoais").doc(usuario).set({
+            primeiro_nome: nome,
+            sobrenome: sobrenome,
+            data_nascimento: data_nascimento,
+            cpf: cpf
+        });
+
+        await client.query("COMMIT");
+        res.status(201).json({ postgres: postgresResult.rows[0], firebase: firebaseResult });
     } catch (err) {
-        console.error("Erro ao salvar dados pessoais:", err.message, err.stack);
-        res.status(500).json({ error: "Erro ao salvar dados pessoais: " + err.message });
+        await client.query("ROLLBACK");
+        console.error("Erro ao criar dados pessoais:", err);
+        res.status(500).json({ error: "Erro ao criar dados pessoais: " + err.message });
     }
 });
 
@@ -82,6 +98,35 @@ app.put("/api/dados-pessoais", async (req, res) => {
     } catch (err) {
         console.error("Erro ao atualizar dados pessoais:", err.message, err.stack);
         res.status(500).json({ error: "Erro ao atualizar dados pessoais: " + err.message });
+    }
+});
+
+// Rota para apagar dados pessoais
+app.delete("/api/dados-pessoais/:usuario", async (req, res) => {
+    const usuario = req.params.usuario;
+
+    if (!usuario) {
+        return res.status(400).json({ error: "O campo 'usuario' é obrigatório" });
+    }
+
+    try {
+        const client = await connect();
+        const query = `
+            DELETE FROM schema1.dados_pessoais
+            WHERE usuario = $1
+            RETURNING *`;
+        const values = [usuario];
+
+        const result = await client.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Usuário não encontrado" });
+        }
+
+        res.status(200).json({ message: "Dados pessoais apagados com sucesso", deleted: result.rows[0] });
+    } catch (err) {
+        console.error("Erro ao apagar dados pessoais:", err);
+        res.status(500).json({ error: "Erro ao apagar dados pessoais: " + err.message });
     }
 });
 
@@ -136,6 +181,35 @@ app.put("/api/contato", async (req, res) => {
     }
 });
 
+// Rota para apagar contato
+app.delete("/api/contato/:login", async (req, res) => {
+    const login = req.params.login;
+
+    if (!login) {
+        return res.status(400).json({ error: "O campo 'login' é obrigatório" });
+    }
+
+    try {
+        const client = await connect();
+        const query = `
+            DELETE FROM schema1.contato
+            WHERE login = $1
+            RETURNING *`;
+        const values = [login];
+
+        const result = await client.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Contato não encontrado" });
+        }
+
+        res.status(200).json({ message: "Contato apagado com sucesso", deleted: result.rows[0] });
+    } catch (err) {
+        console.error("Erro ao apagar contato:", err);
+        res.status(500).json({ error: "Erro ao apagar contato: " + err.message });
+    }
+});
+
 // Rota para salvar salário
 app.post("/api/salario", async (req, res) => {
     console.log("Recebendo requisição:", req.body);
@@ -182,6 +256,35 @@ app.put("/api/salario", async (req, res) => {
     } catch (err) {
         console.error("Erro ao atualizar salário:", err);
         res.status(500).json({ error: "Erro ao atualizar salário: " + err.message });
+    }
+});
+
+// Rota para apagar salário
+app.delete("/api/salario/:login", async (req, res) => {
+    const login = req.params.login;
+
+    if (!login) {
+        return res.status(400).json({ error: "O campo 'login' é obrigatório" });
+    }
+
+    try {
+        const client = await connect();
+        const query = `
+            DELETE FROM schema1.salario
+            WHERE login = $1
+            RETURNING *`;
+        const values = [login];
+
+        const result = await client.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Salário não encontrado" });
+        }
+
+        res.status(200).json({ message: "Salário apagado com sucesso", deleted: result.rows[0] });
+    } catch (err) {
+        console.error("Erro ao apagar salário:", err);
+        res.status(500).json({ error: "Erro ao apagar salário: " + err.message });
     }
 });
 
