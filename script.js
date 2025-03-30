@@ -50,6 +50,22 @@ async function atualizarDadosPessoais() {
     }
 }
 
+async function apagarDadosPessoais(usuario) {
+    try {
+        const response = await fetch(`http://localhost:3000/api/dados-pessoais/${usuario}`, {
+            method: "DELETE",
+        });
+        if (response.ok) {
+            alert("Dados pessoais apagados com sucesso!");
+        } else {
+            alert("Erro ao apagar dados pessoais.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar ao servidor.");
+    }
+}
+
 async function mostrarTabelaDadosPessoais() {
     const dados = {
         nome: document.getElementById("nome-dados").value || null,
@@ -119,6 +135,22 @@ async function atualizarContato() {
             alert("Contato atualizado com sucesso!");
         } else {
             alert("Erro ao atualizar contato.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar ao servidor.");
+    }
+}
+
+async function apagarContato(login) {
+    try {
+        const response = await fetch(`http://localhost:3000/api/contato/${login}`, {
+            method: "DELETE",
+        });
+        if (response.ok) {
+            alert("Contato apagado com sucesso!");
+        } else {
+            alert("Erro ao apagar contato.");
         }
     } catch (err) {
         console.error(err);
@@ -197,6 +229,22 @@ async function atualizarSalario() {
     }
 }
 
+async function apagarSalario(login) {
+    try {
+        const response = await fetch(`http://localhost:3000/api/salario/${login}`, {
+            method: "DELETE",
+        });
+        if (response.ok) {
+            alert("Salário apagado com sucesso!");
+        } else {
+            alert("Erro ao apagar salário.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar ao servidor.");
+    }
+}
+
 async function mostrarTabelaSalario() {
     const dados = {
         login: document.getElementById("login-salario").value,
@@ -230,7 +278,7 @@ async function mostrarTabela() {
     // Definir cabeçalhos e endpoint com base na seleção
     switch (escolha) {
         case "valor1": // Dados Pessoais
-            headers = ["Usuário", "Sobrenome", "Data Nascimento", "CPF", "Nome"];
+            headers = ["Usuário", "Nome", "Sobrenome","CPF", "Data Nascimento"];
             endpoint = "/api/dados-pessoais";
             break;
         case "valor2": // Contato
@@ -267,7 +315,7 @@ async function mostrarTabela() {
             const tr = document.createElement("tr");
             switch (escolha) {
                 case "valor1":
-                    [item.usuario, item.sobrenome, item.data_nascimento, item.cpf, item.nome]
+                    [item.usuario, item.nome, item.sobrenome, item.cpf, item.data_nascimento]
                         .forEach(value => {
                             const td = document.createElement("td");
                             td.textContent = value !== null ? value : "null"; // Exibe "null" se o valor for nulo
