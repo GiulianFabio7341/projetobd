@@ -13,11 +13,25 @@ body{
 }
 main{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-evenly;
-    width: 100vw;
+    width: 99vw;
    
     align-items: center; 
+}
+main div.form{
+    display: flex;
+    flex-direction:row;
+    justify-content: space-evenly;
+    width: 99vw;
+    align-items: center;
+}
+main div.view{
+    display: flex;
+    flex-direction:column;
+    justify-content: space-evenly;
+    width: 99vw;
+    align-items: center;
 }
 section{
     display: flex;
@@ -74,6 +88,22 @@ input:hover{
     color: black;
     transition-duration: 0.5s;
     width: 12vw;
+}
+
+h3,span{
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: italic;
+    font-weight: 400;
+}
+
+select{
+    margin-bottom: 20px;
+    width: 10vw;
+    height: 3vh;
+    
+}
+footer{
+    margin-top: 30px;
 }
 
 

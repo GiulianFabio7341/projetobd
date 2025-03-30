@@ -44,9 +44,7 @@ app.post("/api/dados-pessoais", async (req, res) => {
     console.log("Recebendo requisição:", req.body);
     const { nome, sobrenome, data_nascimento, cpf, usuario } = req.body;
 
-    if (!nome || !sobrenome || !data_nascimento || !cpf || !usuario) {
-        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-    }
+    
 
     try {
         const client = await connect();
@@ -68,10 +66,6 @@ app.post("/api/dados-pessoais", async (req, res) => {
 app.put("/api/dados-pessoais", async (req, res) => {
     console.log("Recebendo requisição de atualização:", req.body);
     const { nome, sobrenome, data_nascimento, cpf, usuario } = req.body;
-
-    if (!nome || !sobrenome || !data_nascimento || !cpf || !usuario) {
-        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-    }
 
     try {
         const client = await connect();
@@ -96,10 +90,7 @@ app.post("/api/contato", async (req, res) => {
     console.log("Recebendo requisição:", req.body);
     const { login, email, telefone, redes_sociais } = req.body;
 
-    if (!login || !email || !telefone || !redes_sociais) {
-        console.error("Erro: Campos obrigatórios faltando!", req.body);
-        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-    }
+   
 
     try {
         const client = await connect();
@@ -124,10 +115,7 @@ app.put("/api/contato", async (req, res) => {
     console.log("Recebendo requisição de atualização de contato:", req.body);
     const { login, email, telefone, redes_sociais } = req.body;
 
-    if (!login || !email || !telefone || !redes_sociais) {
-        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-    }
-
+  
     try {
         const client = await connect();
         const query = `
@@ -153,10 +141,6 @@ app.post("/api/salario", async (req, res) => {
     console.log("Recebendo requisição:", req.body);
     const { login, transacao } = req.body;
 
-    if (!login || !transacao ) {
-        console.error("Erro: Campos obrigatórios faltando!", req.body);
-        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-    }
 
     try {
         const client = await connect();
@@ -181,10 +165,6 @@ app.put("/api/salario", async (req, res) => {
     console.log("Recebendo requisição de atualização de salário:", req.body);
     const { login, transacao } = req.body;
 
-    if (!login || !transacao) {
-        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
-    }
-
     try {
         const client = await connect();
         const query = `
@@ -205,11 +185,51 @@ app.put("/api/salario", async (req, res) => {
     }
 });
 
+// Rota para buscar todos os dados pessoais
+app.get("/api/dados-pessoais", async (req, res) => {
+    try {
+        const client = await connect();
+        const query = "SELECT * FROM schema1.dados_pessoais";
+        const result = await client.query(query);
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error("Erro ao buscar dados pessoais:", err);
+        res.status(500).json({ error: "Erro ao buscar dados pessoais: " + err.message });
+    }
+});
+
+// Rota para buscar todos os contatos
+app.get("/api/contato", async (req, res) => {
+    try {
+        const client = await connect();
+        const query = "SELECT * FROM schema1.contato";
+        const result = await client.query(query);
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error("Erro ao buscar contatos:", err);
+        res.status(500).json({ error: "Erro ao buscar contatos: " + err.message });
+    }
+});
+
+// Rota para buscar todos os salários
+app.get("/api/salario", async (req, res) => {
+    try {
+        const client = await connect();
+        const query = "SELECT * FROM schema1.salario";
+        const result = await client.query(query);
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error("Erro ao buscar salários:", err);
+        res.status(500).json({ error: "Erro ao buscar salários: " + err.message });
+    }
+});
 
 // Rota para servir o HTML
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
+
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
