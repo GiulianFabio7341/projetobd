@@ -299,6 +299,6 @@ async function mostrarTabela() {
     }
 }
 
-// Correção das funções mostrarTabela específicas (removidas ou ajustadas)
+// Funções mostrarTabela
 document.getElementById("escolha").addEventListener("change", mostrarTabela);
 document.addEventListener("DOMContentLoaded", mostrarTabela);
