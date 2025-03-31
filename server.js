@@ -1,3 +1,4 @@
+//Configuração de bibliotecas usadas
 require("dotenv").config();
 const express = require("express");
 const { Pool } = require("pg");
@@ -51,7 +52,6 @@ try {
     console.error("Erro ao carregar serviceAccountKey.json:", err.message);
     process.exit(1);
 }
-
 const db = admin.firestore();
 
 // Rota para salvar dados pessoais
@@ -65,7 +65,7 @@ app.post("/api/dados-pessoais", async (req, res) => {
 
     try {
         client = await connect();
-        await client.query("BEGIN");
+        await client.query("BEGIN"); // Inicio de Transação
 
         const postgresResult = await client.query(`
             INSERT INTO schema1.dados_pessoais (nome, sobrenome, data_nascimento, cpf, usuario) 
@@ -79,11 +79,11 @@ app.post("/api/dados-pessoais", async (req, res) => {
             cpf: cpf
         });
 
-        await client.query("COMMIT");
+        await client.query("COMMIT"); // Conclusão de Transação
         res.status(201).json({ postgres: postgresResult.rows[0], firebase: "Dados salvos no Firestore" });
     } catch (err) {
         if (client) {
-            await client.query("ROLLBACK");
+            await client.query("ROLLBACK"); // Transação não concluída
             client.release();
         }
         console.error("Erro ao criar dados pessoais:", err);
